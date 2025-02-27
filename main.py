@@ -17,7 +17,6 @@ class UserDatabase:
         """)
         self.conn.commit()
 
-
     def add_user(self, name, phone):
         """Adds a new user to the database."""
         self.cursor.execute("INSERT INTO users (name, phone) VALUES (?, ?)", (name, phone))
@@ -27,6 +26,11 @@ class UserDatabase:
         """Gets all users."""
         self.cursor.execute("SELECT * FROM users")
         return self.cursor.fetchall()
+
+    def update_user(self, user_id, name, phone):
+        """Updates a user's name and phone number by ID."""
+        self.cursor.execute("UPDATE users SET name = ?, phone = ? WHERE id = ?", (name, phone, user_id))
+        self.conn.commit()
 
     def delete_user(self, user_id):
         """Deletes a user by ID."""
@@ -41,12 +45,20 @@ class UserDatabase:
 # Example usage
 if __name__ == "__main__":
     db = UserDatabase()
+
+    # Adding users
     db.add_user("Alice", "+998901234567")
     db.add_user("Bob", "+998901234568")
 
+    # Updating user
+    db.update_user(1, "Alice Updated", "+998909876543")
+
+    # Fetching and displaying users
     users = db.get_users()
     for user in users:
         print(user)
 
-    db.delete_user(1 or 2)
+    # Deleting a user
+    db.delete_user(2)
+
     db.close()
